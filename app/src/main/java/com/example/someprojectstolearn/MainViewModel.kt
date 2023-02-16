@@ -1,10 +1,13 @@
 package com.example.someprojectstolearn
 
+import android.content.Context
 import android.net.Uri
+import androidx.core.net.toUri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MimeTypes
 import androidx.media3.common.Player
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
@@ -12,13 +15,12 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
-
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     val player: Player,
     private val metaDataReader: MetaDataReader
-): ViewModel() {
+) : ViewModel() {
 
     private val videoUris = savedStateHandle.getStateFlow("videoUris", emptyList<Uri>())
 
@@ -39,6 +41,17 @@ class MainViewModel @Inject constructor(
     fun addVideoUri(uri: Uri) {
         savedStateHandle["videoUris"] = videoUris.value + uri
         player.addMediaItem(MediaItem.fromUri(uri))
+    }
+
+    fun addVideoYoutube(context: Context) {
+        val youtubeLink = "http://www.youtube.com/watch?v=Hw0Jeq42FNU"
+        val uri = youtubeLink.toUri()
+        savedStateHandle["videoUris"] = videoUris.value + uri
+        val mediaItem = MediaItem.Builder()
+            .setUri(uri)
+            .setMimeType(MimeTypes.APPLICATION_MPD)
+            .build()
+        player.addMediaItem(mediaItem)
     }
 
     fun playVideo(uri: Uri) {

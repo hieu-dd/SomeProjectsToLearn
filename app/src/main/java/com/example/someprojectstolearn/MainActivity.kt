@@ -14,6 +14,7 @@ import androidx.compose.material.icons.filled.FileOpen
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -31,6 +32,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             SomeProjectsToLearnTheme {
                 val viewModel = hiltViewModel<MainViewModel>()
+
                 val videoItems by viewModel.videoItems.collectAsState()
                 val selectVideoLauncher = rememberLauncherForActivityResult(
                     contract = ActivityResultContracts.GetContent(),
@@ -82,6 +84,7 @@ class MainActivity : ComponentActivity() {
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     IconButton(onClick = {
+                        viewModel.addVideoYoutube(this@MainActivity)
                         selectVideoLauncher.launch("video/mp4")
                     }) {
                         Icon(
